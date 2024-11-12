@@ -18,20 +18,10 @@ const GameScreen = () => {
   const currentWordData = wordsData.easy[currentWordIndex]
 
   useEffect(() => {
-    if (paused || timer === 0 || win) {
-      setModalVisible(true); 
-    }
-  }, [paused, timer, win]);
-
-  useEffect(() => {
-    if (timer === 0) {
-      setModalVisible(true);
-    } else if (win) {
-      setModalVisible(true);
-    } else if (paused) {
+    if ((paused || timer === 0 || win) && !modalVisible) { 
       setModalVisible(true);
     }
-  }, [timer, win, paused]); 
+  }, [paused, timer, win, modalVisible]);
 
   useEffect(() => {
     let interval;
@@ -47,7 +37,6 @@ const GameScreen = () => {
   useEffect(() => {
     if (currentWordData.words.length === guessedWords.length) {
       setWin(true)
-      return  Alert.alert('YOU WIN!');
     }
     setShuffledLetters(shuffleWord(currentWordData.word));
     if (currentWordData.words.length === guessedWords.length) {
@@ -75,7 +64,6 @@ const GameScreen = () => {
 
   const handleGuess = (newSelectedLetters) => {
     const normalizedWords = currentWordData.words.map(word => word.toLowerCase());
-    console.log('guessedWords', guessedWords.includes(newSelectedLetters))
 
     if (normalizedWords.includes(newSelectedLetters) && !guessedWords.includes(newSelectedLetters)) {
       setGuessedWords([...guessedWords, newSelectedLetters]);
@@ -112,11 +100,13 @@ const GameScreen = () => {
   };
 
   const restart = () => {
-    setTimer(60)
-    setGuessedWords([])
+    setTimer(60);
+    setGuessedWords([]);
+    setWin(false); 
     setPaused(false);
-    clean()
+    clean();
   };
+  
 
   const handleModalAction = () => {
     if (paused) {
