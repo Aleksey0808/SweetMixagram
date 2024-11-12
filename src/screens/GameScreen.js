@@ -1,31 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import wordsData from '../helpers/wordsData';
+import PopupModal from '../components/PopupModal';
+import { useCoins } from '../utils/CoinsProvider';
 
 const GameScreen = () => {
+  const { coins, addCoins, removeCoins } = useCoins();
   const [timer, setTimer] = useState(60);
-  const [coins, setCoins] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
   const [guessedWords, setGuessedWords] = useState([]);
   const [selectedLetters, setSelectedLetters] = useState('');
   const [shuffledLetters, setShuffledLetters] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [win, setWin] = useState(false);
  
   const currentWordData = wordsData.easy[currentWordIndex]
 
   useEffect(() => {
+    if ((paused || timer === 0 || win) && !modalVisible) { 
+      setModalVisible(true);
+    }
+  }, [paused, timer, win, modalVisible]);
+
+  useEffect(() => {
     let interval;
-    if (!paused && timer > 0) {
+    if (!paused && timer > 0 && !modalVisible) { 
       interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
     } else {
       clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [paused, timer]);
+  }, [paused, timer, modalVisible]); 
+  
 
   useEffect(() => {
-    if (currentWordIndex === 2 && currentWordData.words.length === guessedWords.length) {
-      return  Alert.alert('YOU WIN!');
+    if (currentWordData.words.length === guessedWords.length) {
+      setWin(true)
     }
     setShuffledLetters(shuffleWord(currentWordData.word));
     if (currentWordData.words.length === guessedWords.length) {
@@ -53,11 +64,10 @@ const GameScreen = () => {
 
   const handleGuess = (newSelectedLetters) => {
     const normalizedWords = currentWordData.words.map(word => word.toLowerCase());
-    console.log('guessedWords', guessedWords.includes(newSelectedLetters))
 
     if (normalizedWords.includes(newSelectedLetters) && !guessedWords.includes(newSelectedLetters)) {
       setGuessedWords([...guessedWords, newSelectedLetters]);
-      setCoins(coins + 10);
+      addCoins(10);
       setSelectedLetters('');
     } else if (guessedWords.includes(newSelectedLetters)) {
       Alert.alert('Такое слово уже есть.');
@@ -71,6 +81,7 @@ const GameScreen = () => {
   const handleSkip = () => {
     const wordToSkip = currentWordData.words.find((word) => !guessedWords.includes(word));
     if (wordToSkip) {
+      removeCoins(10)
       setGuessedWords([...guessedWords, "skip"]);  
     }
   };
@@ -81,10 +92,40 @@ const GameScreen = () => {
 
     if (remainingWords.length > 0) {
       const hintWord = remainingWords[0];
+      removeCoins(10)
       setGuessedWords([...guessedWords, hintWord]);
     } else {
       Alert.alert("Все слова угаданы!");
     }
+  };
+
+  const restart = () => {
+    setTimer(60);
+    setGuessedWords([]);
+    setWin(false); 
+    setPaused(false);
+    clean();
+  };
+  
+
+  const handleModalAction = () => {
+    if (paused) {
+      setPaused(false);
+      setModalVisible(false); 
+    } else if (win) {
+      restart(); 
+      setModalVisible(false); 
+    } else if (timer === 0) {
+      restart(); 
+      setModalVisible(false); 
+    }
+  };
+
+  const getModalType = () => {
+    if (paused) return 'paused';
+    if (win) return 'win';
+    if (timer === 0) return 'timeout';
+    return null;
   };
 
   const selectPaused = () => {
@@ -93,6 +134,12 @@ const GameScreen = () => {
 
   return (
     <View style={styles.container}>
+      <PopupModal
+      visible={modalVisible}
+      onPlay={handleModalAction} 
+      modalType={getModalType()} 
+    />
+
       <View style={styles.contentContainer}>
       <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 20}}>
       <Text style={styles.coins}>Time: {timer}</Text>
