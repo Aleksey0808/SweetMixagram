@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, StyleSheet, FlatList, ImageBackground, Image, TouchableOpacity, Alert } from 'react-native';
 import wordsData from '../helpers/wordsData';
 import PopupModal from '../components/PopupModal';
 import { useCoins } from '../utils/CoinsProvider';
 import Header from '../components/Header';
+import { useSound } from '../utils/SoundProvider';
 
 const GameScreen = ({route}) => {
+  const { isSoundOn, playClickSound } = useSound();
   const { level } = route.params;
 
   const { coins, addCoins, removeCoins } = useCoins();
@@ -20,6 +23,13 @@ const GameScreen = ({route}) => {
  
   const currentWordData = wordsData[level][currentWordIndex];
 
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setModalVisible(false); 
+      };
+    }, [])
+  );
 
   useEffect(() => {
     if ((paused || timer === 0 || win) && !modalVisible) { 
@@ -54,6 +64,7 @@ const GameScreen = ({route}) => {
   };
 
   const clean = () => {
+    isSoundOn && playClickSound()
     setSelectedLetters('')
   }
 
@@ -83,6 +94,7 @@ const GameScreen = ({route}) => {
   };
 
   const handleSkip = () => {
+    isSoundOn && playClickSound()
     const wordToSkip = currentWordData.words.find((word) => !guessedWords.includes(word));
     if (wordToSkip) {
       removeCoins(10)
@@ -91,7 +103,7 @@ const GameScreen = ({route}) => {
   };
   
   const handleHint = () => {
-    console.log('Hint')
+    isSoundOn && playClickSound()
     const remainingWords = currentWordData.words.filter(word => !guessedWords.includes(word));
 
     if (remainingWords.length > 0) {
@@ -104,6 +116,7 @@ const GameScreen = ({route}) => {
   };
 
   const restart = () => {
+    isSoundOn && playClickSound()
     setTimer(60);
     setGuessedWords([]);
     setWin(false); 
@@ -133,6 +146,7 @@ const GameScreen = ({route}) => {
   };
 
   const selectPaused = () => {
+    isSoundOn && playClickSound()
     setPaused(!paused);
   };
 
@@ -151,6 +165,7 @@ const GameScreen = ({route}) => {
         visible={modalVisible}
         onPlay={handleModalAction}
         modalType={getModalType()}
+        onClose={() => setModalVisible(false)}
       />
 
       <View style={styles.contentContainer}>
@@ -162,14 +177,23 @@ const GameScreen = ({route}) => {
           <TouchableOpacity onPress={handleSkip} style={styles.iconButton}>
             <Image source={require('../../assets/images/game/skip.png')} style={styles.iconImage} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setShuffledLetters(shuffleWord(currentWordData.word))} style={styles.iconButton}>
+          <TouchableOpacity onPress={() => {
+            isSoundOn && playClickSound()
+            setShuffledLetters(shuffleWord(currentWordData.word))
+          }
+            } 
+            style={styles.iconButton}>
             <Image source={require('../../assets/images/game/mix.png')} style={styles.iconImage} />
           </TouchableOpacity>
         </View>
         <FlatList
           data={shuffledLetters}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleLetterPress(item)}>
+            <TouchableOpacity onPress={() => {
+              handleLetterPress(item)
+              isSoundOn && playClickSound()
+            }
+            }>
               <Text style={styles.letter}>{item}</Text>
             </TouchableOpacity>
           )}
@@ -192,15 +216,15 @@ const GameScreen = ({route}) => {
                 {guessedWords[index] || ''}
               </Text>
         </View>
-    )}
-    keyExtractor={(item, index) => index.toString()}
-    contentContainerStyle={{
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingHorizontal: 10,
-      gap: 10,
-    }}
-  />
+       )}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingHorizontal: 10,
+          gap: 10,
+        }}
+      />
       </View>
     </ImageBackground>
   );

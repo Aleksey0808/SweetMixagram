@@ -6,17 +6,16 @@ import { useSound } from '../utils/SoundProvider';
 
 const SettingsScreen = ({ navigation }) => {
   const { fontsLoaded } = useFonts();
-  const { isMusicOn, setIsMusicOn, isSoundOn, setIsSoundOn, playClickSound } = useSound();
-
-  // const [isMusicOn, setIsMusicOn] = useState(false);  
-  // const [isSoundOn, setIsSoundOn] = useState(false);   
+  const { isMusicOn, setIsMusicOn, isSoundOn, setIsSoundOn, playClickSound } = useSound(); 
 
   const handleTermsPress = () => {
     Linking.openURL('https://racketstep.click/aviacloud-terms');
+    isSoundOn && playClickSound()
   };
 
   const handlePrivacyPress = () => {
     Linking.openURL('https://racketstep.click/alviacloud-policy');
+    isSoundOn && playClickSound()
   };
 
   return (
@@ -32,7 +31,12 @@ const SettingsScreen = ({ navigation }) => {
           <View style={styles.settingsOverlay}>
             <View style={styles.settingItem}>
               <Text style={[styles.settingText, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Music</Text>
-              <TouchableOpacity onPress={() => setIsMusicOn(!isMusicOn)}>
+              <TouchableOpacity onPress={() => {
+                setIsMusicOn(!isMusicOn)
+                isSoundOn && playClickSound()
+
+              }
+                }>
                 <Image 
                   source={isMusicOn 
                     ? require('../../assets/images/setting/on.png') 
@@ -45,7 +49,11 @@ const SettingsScreen = ({ navigation }) => {
 
             <View style={styles.settingItem}>
               <Text style={[styles.settingText, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Sound</Text>
-              <TouchableOpacity onPress={() => setIsSoundOn(!isSoundOn)}>
+              <TouchableOpacity onPress={() => {
+                setIsSoundOn(!isSoundOn)
+                isSoundOn && playClickSound();
+              }
+                }>
                 <Image 
                   source={isSoundOn 
                     ? require('../../assets/images/setting/on.png') 

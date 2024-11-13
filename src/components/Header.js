@@ -1,13 +1,20 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useFonts } from '../utils/FontContext';
+import { useSound } from '../utils/SoundProvider';
 
 const Header = ({ coins, timer, onPause, title, icon }) => {
+  const { isSoundOn, playClickSound } = useSound();
   const { fontsLoaded } = useFonts();
 
   return (
     <View style={styles.header}>
-      <TouchableOpacity onPress={onPause} style={styles.pauseButton}>
+      <TouchableOpacity onPress={() => {
+        onPause()
+        isSoundOn && playClickSound()
+      }
+      } 
+      style={styles.pauseButton}>
         {icon ? <Image source={require('../../assets/images/header/back.png')} style={styles.iconImage} />
         :
         <Image source={require('../../assets/images/header/pause.png')} style={styles.iconImage} />

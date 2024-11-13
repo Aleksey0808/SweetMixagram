@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { View, Text, ImageBackground, TouchableOpacity, Image, StyleSheet, } from 'react-native';
 import { useFonts } from '../utils/FontContext';
+import { useSound } from '../utils/SoundProvider';
 
 const RulesScreen = ({ navigation }) => {
+  const { isSoundOn, playClickSound } = useSound();
   const { fontsLoaded } = useFonts();
 
   return (
@@ -21,11 +23,23 @@ const RulesScreen = ({ navigation }) => {
           Complete all the words to move to the next level. The faster you solve each puzzle, the higher your score will climb.
           </Text>
         </View>
-        <TouchableOpacity style={styles.wrapperBack} onPress={() => navigation.goBack()}>
+        <TouchableOpacity 
+        style={styles.wrapperBack} 
+        onPress={() => {
+          navigation.goBack()
+          isSoundOn && playClickSound()
+        }
+        }>
             <Image source={require('../../assets/images/elements/helpButton.png')} style={styles.imgButton} />
             <Text style={[styles.textButton, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Back</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.wrapperButton} onPress={() => navigation.navigate("Home")}>
+          <TouchableOpacity 
+          style={styles.wrapperButton} 
+          onPress={() => {
+            navigation.navigate("Home")
+            isSoundOn && playClickSound()
+          }
+          }>
             <Image source={require('../../assets/images/elements/helpButton.png')} style={styles.imgButton} />
             <Text style={[styles.textButton, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Next</Text>
           </TouchableOpacity>

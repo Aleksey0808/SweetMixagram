@@ -5,14 +5,14 @@ const SoundContext = createContext();
 
 export const SoundProvider = ({ children }) => {
   const [music, setMusic] = useState(null);
-  const [effect, setEffect] = useState(null);
   const [isMusicOn, setIsMusicOn] = useState(true); 
   const [isSoundOn, setIsSoundOn] = useState(true); 
 
   const playMusic = async () => {
+    if (music) return;  
     const { sound } = await Audio.Sound.createAsync(
-      require('../assets/sounds/background-music.mp3'),
-      { isLooping: true } 
+      require('../../assets/sounds/background-music.mp3'),
+      { isLooping: true }
     );
     setMusic(sound);
     if (isMusicOn) {
@@ -23,6 +23,7 @@ export const SoundProvider = ({ children }) => {
   const stopMusic = async () => {
     if (music) {
       await music.stopAsync();
+      await music.unloadAsync();
       setMusic(null);
     }
   };
@@ -31,18 +32,27 @@ export const SoundProvider = ({ children }) => {
     if (!isSoundOn) return; 
 
     const { sound } = await Audio.Sound.createAsync(
-      require('../assets/sounds/click-sound.mp3')
+      require('../../assets/sounds/click-sound.wav')
     );
-    setEffect(sound);
     await sound.playAsync();
+    sound.setOnPlaybackStatusUpdate(status => {
+      if (status.didJustFinish) {
+        sound.unloadAsync(); 
+      }
+    });
   };
 
   useEffect(() => {
+    if (isMusicOn) {
+      playMusic();
+    } else {
+      stopMusic();
+    }
+
     return () => {
       if (music) music.unloadAsync();
-      if (effect) effect.unloadAsync();
     };
-  }, [music, effect]);
+  }, [isMusicOn]);
 
   return (
     <SoundContext.Provider value={{ playMusic, stopMusic, playClickSound, isMusicOn, setIsMusicOn, isSoundOn, setIsSoundOn }}>
