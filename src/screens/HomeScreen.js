@@ -20,7 +20,7 @@ const HomeScreen = ({ navigation }) => {
             <Image source={require('../../assets/images/elements/button.png')} style={styles.imgButton} />
               <Text style={[styles.textButton, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Play</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.wrapperButton} onPress={() => navigation.navigate("Game")}>
+          <TouchableOpacity style={styles.wrapperButton} onPress={() => navigation.navigate("About")}>
             <Image source={require('../../assets/images/elements/button.png')} style={styles.imgButton} />
               <Text style={[styles.textButton, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>About</Text>
           </TouchableOpacity>
