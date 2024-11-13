@@ -5,7 +5,9 @@ import PopupModal from '../components/PopupModal';
 import { useCoins } from '../utils/CoinsProvider';
 import Header from '../components/Header';
 
-const GameScreen = () => {
+const GameScreen = ({route}) => {
+  const { level } = route.params;
+
   const { coins, addCoins, removeCoins } = useCoins();
   const [timer, setTimer] = useState(60);
   const [modalVisible, setModalVisible] = useState(false);
@@ -16,7 +18,8 @@ const GameScreen = () => {
   const [paused, setPaused] = useState(false);
   const [win, setWin] = useState(false);
  
-  const currentWordData = wordsData.easy[currentWordIndex]
+  const currentWordData = wordsData[level][currentWordIndex];
+
 
   useEffect(() => {
     if ((paused || timer === 0 || win) && !modalVisible) { 
@@ -135,7 +138,13 @@ const GameScreen = () => {
 
   return (
     <ImageBackground
-      source={require('../../assets/images/game/easyBg.png')}
+      source={
+        level === 'easy'
+          ? require('../../assets/images/game/easyBg.png') 
+          : level === 'normal' 
+            ? require('../../assets/images/game/normalBg.jpg') 
+            : require('../../assets/images/game/hardBg.jpg')
+      }
       style={styles.bgContainer}
     >
       <PopupModal
@@ -174,7 +183,6 @@ const GameScreen = () => {
             <Image source={require('../../assets/images/game/clean.png')} style={styles.cleanIcon} />
           </TouchableOpacity>
         </View>
-        {/* <View style={styles.guessedWordsContainer}> */}
         <FlatList
           numColumns={2}
           data={Array.from({ length: currentWordData.words.length })}
@@ -193,8 +201,6 @@ const GameScreen = () => {
       gap: 10,
     }}
   />
-{/* </View> */}
-
       </View>
     </ImageBackground>
   );
@@ -225,6 +231,7 @@ const styles = StyleSheet.create({
   },
   lettersContainer: {
     justifyContent: 'center',
+    alignItems: 'center',
     marginVertical: 20,
     width: '100%',
   },
@@ -265,13 +272,6 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     resizeMode: 'contain',
-  },
-  guessedWordsContainer: {
-    width: '80%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
-    padding: 10,
   },
   word: {
     fontSize: 18,

@@ -38,7 +38,7 @@ const PopupModal = ({ visible, onPlay, modalType }) => {
             {/* Кнопка с текстом и действием, которое меняется в зависимости от modalType */}
             <TouchableOpacity style={styles.mainButton} onPress={onPressAction}>
               <Image source={require('../../assets/images/modal/button.png')} style={styles.buttonImage} />
-              <Text style={[styles.buttonText, { fontFamily: fontsLoaded ? 'Lilita-One' : 'System' }]}>
+              <Text style={[styles.buttonText, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>
                 {buttonText}
               </Text>
             </TouchableOpacity>
