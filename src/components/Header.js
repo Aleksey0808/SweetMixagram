@@ -1,23 +1,37 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { useFonts } from '../utils/FontContext';
 
-const Header = ({ coins, timer, onPause }) => {
+const Header = ({ coins, timer, onPause, title, icon }) => {
+  const { fontsLoaded } = useFonts();
+
   return (
     <View style={styles.header}>
       <TouchableOpacity onPress={onPause} style={styles.pauseButton}>
+        {icon ? <Image source={require('../../assets/images/header/back.png')} style={styles.iconImage} />
+        :
         <Image source={require('../../assets/images/header/pause.png')} style={styles.iconImage} />
+        }
       </TouchableOpacity>
 
-      <View style={styles.coinContainer}>
-        <Image source={require('../../assets/images/header/bgCoin.png')} style={styles.bgCoin} />
-        <Image source={require('../../assets/images/header/coin.png')} style={styles.coinImage} />
-        <Text style={styles.coins}>{coins}</Text>
+      {icon ? 
+      <View style={styles.centerContainer}>
+        <Text style={[styles.title, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Select difficulty</Text>
       </View>
+      :
+      <>
+        <View style={styles.coinContainer}>
+          <Image source={require('../../assets/images/header/bgCoin.png')} style={styles.bgCoin} />
+          <Image source={require('../../assets/images/header/coin.png')} style={styles.coinImage} />
+          <Text style={styles.coins}>{coins}</Text>
+        </View>
       
       <View style={styles.timerContainer}>
         <Image source={require('../../assets/images/header/time.png')} style={styles.timeImage} />
         <Text style={styles.timer}>00:{timer}</Text>
       </View>
+    </>
+      }
     </View>
   );
 };
@@ -33,6 +47,17 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingHorizontal: 20,
     marginTop: 60,
+  },
+  centerContainer: {
+    flex: 1,
+    alignItems: 'center', 
+    justifyContent: 'center', 
+  },
+  title: {
+    // textAlign: 'center',
+    color: '#FFFFFF',
+    fontSize: 30,
+    fontWeight: 'bold',
   },
   pauseButton: {
     padding: 10,

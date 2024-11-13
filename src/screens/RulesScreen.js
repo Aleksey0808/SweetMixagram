@@ -2,31 +2,32 @@ import React, { useEffect } from 'react';
 import { View, Text, ImageBackground, TouchableOpacity, Image, StyleSheet, } from 'react-native';
 import { useFonts } from '../utils/FontContext';
 
-const WelcomeScreen = ({ navigation }) => {
+const RulesScreen = ({ navigation }) => {
   const { fontsLoaded } = useFonts();
 
   return (
        <ImageBackground
-       source={require('../../assets/images/bg/welcomeBg.jpg')}
+       source={require('../../assets/images/bg/rulesBg.jpg')}
         style={styles.bgContainer}
       >
         <View style={styles.container}>
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Image source={require('../../assets/images/elements/hello.png')} style={styles.image} />
+        <View style={styles.bgTextTop}>
+          <Text style={[styles.text, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>
+          Each round begins with a fresh set of letters. Use these letters to form words by tapping them in sequence. If you’re ever stuck, give the letters a quick shuffle to inspire new ideas! 
+          </Text>
         </View>
         <View style={styles.bgText}>
           <Text style={[styles.text, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>
-            Welcome to your daily word puzzle that will improve your vocabulary skills. 
+          Complete all the words to move to the next level. The faster you solve each puzzle, the higher your score will climb.
           </Text>
         </View>
-          <Image source={require('../../assets/images/elements/girl.png')} style={styles.girlImage} />
-          <TouchableOpacity style={styles.wrapperButton} onPress={() => navigation.navigate("Rules")}>
+        <TouchableOpacity style={styles.wrapperBack} onPress={() => navigation.goBack()}>
             <Image source={require('../../assets/images/elements/helpButton.png')} style={styles.imgButton} />
-            <Text style={[styles.textButton, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Start</Text>
+            <Text style={[styles.textButton, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Back</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.wrapperButton} onPress={() => navigation.navigate("Rules")}>
+          <TouchableOpacity style={styles.wrapperButton} onPress={() => navigation.navigate("Home")}>
             <Image source={require('../../assets/images/elements/helpButton.png')} style={styles.imgButton} />
-            <Text style={[styles.textButton, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Start</Text>
+            <Text style={[styles.textButton, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Next</Text>
           </TouchableOpacity>
         </View>
       </ImageBackground>
@@ -43,14 +44,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  image: {
+  bgTextTop: {
     position: 'absolute',
     top: 100,
-    resizeMode: 'contain',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    // height: 120,
+    backgroundColor: '#AC4DC9CC',
   },
   bgText: {
     position: 'absolute',
-    top: 300,
+    bottom: 200,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -65,16 +70,24 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     padding: 40,
   },
-  girlImage: {
+  wrapperButton: {
     position: 'absolute',
-    bottom: 0,
-    left: 0, 
-    resizeMode: 'contain',
+    bottom: 50,
+    right: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   wrapperButton: {
     position: 'absolute',
     bottom: 50,
     right: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  wrapperBack: {
+    position: 'absolute',
+    bottom: 50,
+    left: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -89,4 +102,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default WelcomeScreen;
+export default RulesScreen;
