@@ -116,8 +116,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconImage: {
-    width: 40,
-    height: 40,
     resizeMode: 'contain',
   },
 });
