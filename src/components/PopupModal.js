@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useFonts } from '../utils/FontContext';
+import { useSound } from '../utils/SoundProvider';
 
-const PopupModal = ({ visible, onPlay, modalType }) => {
+const PopupModal = ({ visible, onPlay, modalType, onClose }) => {
+  const { isSoundOn, playClickSound } = useSound();
   const { fontsLoaded } = useFonts();
   const navigation = useNavigation();
 
@@ -32,11 +34,14 @@ const PopupModal = ({ visible, onPlay, modalType }) => {
           imageStyle={styles.bgImage}
         >
           <View style={styles.modalContent}>
-            {/* Изображение, которое меняется в зависимости от modalType */}
             <Image source={imageTitle} style={styles.imageTitle} />
-            
-            {/* Кнопка с текстом и действием, которое меняется в зависимости от modalType */}
-            <TouchableOpacity style={styles.mainButton} onPress={onPressAction}>
+            <TouchableOpacity 
+            style={styles.mainButton} 
+            onPress={() => {
+              onPressAction()
+              isSoundOn && playClickSound()
+            }
+            }>
               <Image source={require('../../assets/images/modal/button.png')} style={styles.buttonImage} />
               <Text style={[styles.buttonText, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>
                 {buttonText}
@@ -44,11 +49,24 @@ const PopupModal = ({ visible, onPlay, modalType }) => {
             </TouchableOpacity>
 
             <View style={styles.bottomButtonsContainer}>
-              {/* Кнопки для перехода в домашнюю страницу и настройки */}
-              <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate("Home")}>
+              <TouchableOpacity 
+              style={styles.iconButton} 
+              onPress={() => {
+                onClose()
+                navigation.navigate("Home")
+                isSoundOn && playClickSound()
+              }
+              }>
                 <Image source={require('../../assets/images/modal/home.png')} style={styles.iconImage} />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate("Settings")}>
+              <TouchableOpacity 
+              style={styles.iconButton} 
+              onPress={() => {
+                onClose()
+                navigation.navigate("Settings")
+                isSoundOn && playClickSound()
+              }
+              }>
                 <Image source={require('../../assets/images/modal/setting.png')} style={styles.iconImage} />
               </TouchableOpacity>
             </View>

@@ -6,17 +6,6 @@ import { useFonts } from '../utils/FontContext';
 const AboutScreen = ({ navigation }) => {
   const { fontsLoaded } = useFonts();
 
-  const [isMusicOn, setIsMusicOn] = useState(false);  
-  const [isSoundOn, setIsSoundOn] = useState(true);   
-
-  const handleTermsPress = () => {
-    Linking.openURL('https://racketstep.click/aviacloud-terms');
-  };
-
-  const handlePrivacyPress = () => {
-    Linking.openURL('https://racketstep.click/alviacloud-policy');
-  };
-
   return (
     <ImageBackground
       source={require('../../assets/images/bg/levelBg.jpg')}

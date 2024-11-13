@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { View, Text, ImageBackground, TouchableOpacity, Image, StyleSheet, } from 'react-native';
 import { useFonts } from '../utils/FontContext';
+import { useSound } from '../utils/SoundProvider';
 
 const WelcomeScreen = ({ navigation }) => {
+  const { isSoundOn, playClickSound } = useSound();
   const { fontsLoaded } = useFonts();
 
   return (
@@ -20,11 +22,13 @@ const WelcomeScreen = ({ navigation }) => {
           </Text>
         </View>
           <Image source={require('../../assets/images/elements/girl.png')} style={styles.girlImage} />
-          <TouchableOpacity style={styles.wrapperButton} onPress={() => navigation.navigate("Rules")}>
-            <Image source={require('../../assets/images/elements/helpButton.png')} style={styles.imgButton} />
-            <Text style={[styles.textButton, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Start</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.wrapperButton} onPress={() => navigation.navigate("Rules")}>
+          <TouchableOpacity 
+          style={styles.wrapperButton} 
+          onPress={() => {
+            navigation.navigate("Rules")
+            isSoundOn && playClickSound()
+          }
+          }>
             <Image source={require('../../assets/images/elements/helpButton.png')} style={styles.imgButton} />
             <Text style={[styles.textButton, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Start</Text>
           </TouchableOpacity>

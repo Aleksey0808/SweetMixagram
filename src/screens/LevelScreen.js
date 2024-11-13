@@ -3,8 +3,10 @@ import { View, Text, ImageBackground, Image, StyleSheet, TouchableOpacity } from
 import Header from '../components/Header';
 import { useFonts } from '../utils/FontContext';
 import { useCoins } from '../utils/CoinsProvider';
+import { useSound } from '../utils/SoundProvider';
 
 const LevelScreen = ({ navigation }) => {
+  const { isSoundOn, playClickSound } = useSound();
   const { fontsLoaded } = useFonts();
   const { coins } = useCoins();
   return (
@@ -17,14 +19,22 @@ const LevelScreen = ({ navigation }) => {
           <View style={styles.buttonsContainer}>
           <TouchableOpacity 
           style={styles.wrapperButton}
-           onPress={() => navigation.navigate("Game", { level: 'easy' })}
+           onPress={() => {
+            navigation.navigate("Game", { level: 'easy' })
+            isSoundOn && playClickSound()
+           }
+          }
            >
             <Image source={require('../../assets/images/elements/easy.png')} style={styles.imgButton} />
               <Text style={[styles.textButton, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Easy</Text>
           </TouchableOpacity>
           <TouchableOpacity 
           style={styles.wrapperButton} 
-          onPress={() => navigation.navigate("Game", { level: 'normal' })}
+          onPress={() => {
+            isSoundOn && playClickSound()
+            navigation.navigate("Game", { level: 'normal' })
+          }
+            }
           disabled={coins <= 100}
           >
             {coins >= 100 ? 
@@ -39,7 +49,11 @@ const LevelScreen = ({ navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity 
           style={styles.wrapperButton} 
-          onPress={() => navigation.navigate("Game", { level: 'hard' })}
+          onPress={() => {
+            isSoundOn && playClickSound()
+            navigation.navigate("Game", { level: 'hard' })
+          }
+          }
           disabled={coins <= 100}
           >
           {coins >= 100 ? 
