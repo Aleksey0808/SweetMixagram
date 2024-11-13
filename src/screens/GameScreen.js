@@ -6,12 +6,14 @@ import PopupModal from '../components/PopupModal';
 import { useCoins } from '../utils/CoinsProvider';
 import Header from '../components/Header';
 import { useSound } from '../utils/SoundProvider';
+import { useFonts } from '../utils/FontContext';
 
 const GameScreen = ({route}) => {
+  const { fontsLoaded } = useFonts();
   const { isSoundOn, playClickSound } = useSound();
   const { level } = route.params;
 
-  const { coins, addCoins, removeCoins } = useCoins();
+  const { coins, addCoins, removeCoins, hints, addHint, useHint } = useCoins();
   const [timer, setTimer] = useState(60);
   const [modalVisible, setModalVisible] = useState(false);
   const [guessedWords, setGuessedWords] = useState([]);
@@ -109,6 +111,7 @@ const GameScreen = ({route}) => {
     if (remainingWords.length > 0) {
       const hintWord = remainingWords[0];
       removeCoins(10)
+      useHint(1)
       setGuessedWords([...guessedWords, hintWord]);
     } else {
       Alert.alert("Все слова угаданы!");
@@ -172,10 +175,12 @@ const GameScreen = ({route}) => {
         <Header coins={coins} timer={timer} onPause={selectPaused} />
         <View style={styles.buttonsRow}>
           <TouchableOpacity onPress={handleHint} style={styles.iconButton}>
-            <Image source={require('../../assets/images/game/hint.png')} style={styles.iconImage} />
+            <Image source={require('../../assets/images/elements/helpButton.png')} style={styles.iconImage} />
+            <Text style={[styles.hint, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>HINT({hints})</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleSkip} style={styles.iconButton}>
-            <Image source={require('../../assets/images/game/skip.png')} style={styles.iconImage} />
+            <Image source={require('../../assets/images/elements/helpButton.png')} style={styles.iconImage} />
+            <Text style={[styles.hint, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>SKIP</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {
             isSoundOn && playClickSound()
@@ -249,6 +254,8 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     marginHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   iconImage: {
     resizeMode: 'contain',
@@ -313,6 +320,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 8,
+  },
+  hint: {
+    position: 'absolute',
+    fontSize: 20,
+    color: '#fff',
+    fontWeight: 400,
   },
   
 });

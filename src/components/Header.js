@@ -30,12 +30,12 @@ const Header = ({ coins, timer, onPause, title, icon }) => {
         <View style={styles.coinContainer}>
           <Image source={require('../../assets/images/header/bgCoin.png')} style={styles.bgCoin} />
           <Image source={require('../../assets/images/header/coin.png')} style={styles.coinImage} />
-          <Text style={styles.coins}>{coins}</Text>
+          <Text style={[styles.coins, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>{coins}</Text>
         </View>
       
       <View style={styles.timerContainer}>
         <Image source={require('../../assets/images/header/time.png')} style={styles.timeImage} />
-        <Text style={styles.timer}>00:{timer}</Text>
+        <Text style={[styles.timer, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>00:{timer}</Text>
       </View>
     </>
       }
