@@ -5,15 +5,20 @@ const CoinsContext = createContext();
 
 export const CoinsProvider = ({ children }) => {
   const [coins, setCoins] = useState(0);
+  const [hints, setHints] = useState(3);
 
   useEffect(() => {
-    const loadCoins = async () => {
+    const loadCoinsAndHints = async () => {
       const storedCoins = await AsyncStorage.getItem('coins');
       if (storedCoins !== null) {
         setCoins(Number(storedCoins));
       }
+      const storedHints = await AsyncStorage.getItem('hints');
+      if (storedHints !== null) {
+        setHints(Number(storedHints));
+      }
     };
-    loadCoins();
+    loadCoinsAndHints();
   }, []);
 
   const addCoins = async (amount) => {
@@ -32,8 +37,24 @@ export const CoinsProvider = ({ children }) => {
     });
   };
 
+  const addHint = async () => {
+    setHints((prev) => {
+      const newTotal = prev + 1;
+      AsyncStorage.setItem('hints', newTotal.toString());
+      return newTotal;
+    });
+  };
+
+  const useHint = async () => {
+    setHints((prev) => {
+      const newTotal = Math.max(0, prev - 1);
+      AsyncStorage.setItem('hints', newTotal.toString());
+      return newTotal;
+    });
+  };
+
   return (
-    <CoinsContext.Provider value={{ coins, addCoins, removeCoins }}>
+    <CoinsContext.Provider value={{ coins, addCoins, removeCoins, hints, addHint, useHint }}>
       {children}
     </CoinsContext.Provider>
   );
