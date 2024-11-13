@@ -16,7 +16,7 @@ const Header = ({ coins, timer, onPause, title, icon }) => {
 
       {icon ? 
       <View style={styles.centerContainer}>
-        <Text style={[styles.title, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Select difficulty</Text>
+        <Text style={[styles.title, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>{title}</Text>
       </View>
       :
       <>

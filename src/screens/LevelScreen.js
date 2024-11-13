@@ -12,7 +12,7 @@ const LevelScreen = ({ navigation }) => {
         source={require('../../assets/images/bg/levelBg.jpg')}
         style={styles.bgContainer}
       >
-          <Header icon={true} onPause={() => navigation.goBack()} />
+          <Header title={'Select difficulty'} icon={true} onPause={() => navigation.goBack()} />
         <View style={styles.container}>
           <View style={styles.buttonsContainer}>
           <TouchableOpacity 
