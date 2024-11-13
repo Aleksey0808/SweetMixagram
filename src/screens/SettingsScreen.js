@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, ImageBackground, Image, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import Header from '../components/Header';
 import { useFonts } from '../utils/FontContext';
+import { useSound } from '../utils/SoundProvider';
 
 const SettingsScreen = ({ navigation }) => {
   const { fontsLoaded } = useFonts();
+  const { isMusicOn, setIsMusicOn, isSoundOn, setIsSoundOn, playClickSound } = useSound();
 
-  const [isMusicOn, setIsMusicOn] = useState(false);  
-  const [isSoundOn, setIsSoundOn] = useState(true);   
+  // const [isMusicOn, setIsMusicOn] = useState(false);  
+  // const [isSoundOn, setIsSoundOn] = useState(false);   
 
   const handleTermsPress = () => {
     Linking.openURL('https://racketstep.click/aviacloud-terms');
