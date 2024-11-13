@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ImageBackground, Image, TouchableOpacity, Alert } from 'react-native';
 import wordsData from '../helpers/wordsData';
 import PopupModal from '../components/PopupModal';
 import { useCoins } from '../utils/CoinsProvider';
+import Header from '../components/Header';
 
 const GameScreen = () => {
   const { coins, addCoins, removeCoins } = useCoins();
@@ -133,92 +134,99 @@ const GameScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ImageBackground
+      source={require('../../assets/images/game/easyBg.png')}
+      style={styles.bgContainer}
+    >
       <PopupModal
-      visible={modalVisible}
-      onPlay={handleModalAction} 
-      modalType={getModalType()} 
-    />
+        visible={modalVisible}
+        onPlay={handleModalAction}
+        modalType={getModalType()}
+      />
 
       <View style={styles.contentContainer}>
-      <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 20}}>
-      <Text style={styles.coins}>Time: {timer}</Text>
-        <Text style={styles.coins}>Coins: {coins}</Text>
-        <TouchableOpacity onPress={selectPaused}>
-        <Text style={styles.coins}>{paused ? 'Resume' : 'Pause'}</Text>
-        </TouchableOpacity>
+        <Header coins={coins} timer={timer} onPause={selectPaused} />
+        <View style={styles.buttonsRow}>
+          <TouchableOpacity onPress={handleHint} style={styles.iconButton}>
+            <Image source={require('../../assets/images/game/hint.png')} style={styles.iconImage} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleSkip} style={styles.iconButton}>
+            <Image source={require('../../assets/images/game/skip.png')} style={styles.iconImage} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setShuffledLetters(shuffleWord(currentWordData.word))} style={styles.iconButton}>
+            <Image source={require('../../assets/images/game/mix.png')} style={styles.iconImage} />
+          </TouchableOpacity>
         </View>
-        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 20}}>
-          <TouchableOpacity onPress={handleSkip}>
-          <Text style={styles.skipButton}>SKIP</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleHint}>
-          <Text style={styles.hintButton}>hunt</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setShuffledLetters(shuffleWord(currentWordData.word))}>
-              <Text style={styles.letter}>mix</Text>
-        </TouchableOpacity>
-        </View>
-        
-
         <FlatList
           data={shuffledLetters}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleLetterPress(item)}>
-              <Text style={styles.letter}>
-              {item === currentWordData.words ? 'skip' : item}
-              </Text>
+              <Text style={styles.letter}>{item}</Text>
             </TouchableOpacity>
           )}
           keyExtractor={(item, index) => index.toString()}
           numColumns={5}
           contentContainerStyle={styles.lettersContainer}
         />
-
         <View style={styles.inputContainer}>
           <Text style={styles.inputText}>{selectedLetters}</Text>
+          <TouchableOpacity onPress={clean} style={styles.cleanButton}>
+            <Image source={require('../../assets/images/game/clean.png')} style={styles.cleanIcon} />
+          </TouchableOpacity>
         </View>
-            <TouchableOpacity onPress={() => clean()}>
-              <Text style={styles.letter}>clean</Text>
-            </TouchableOpacity>
-
-        <View style={styles.guessedWordsContainer}>
+        {/* <View style={styles.guessedWordsContainer}> */}
         <FlatList
-        data={guessedWords}
-        renderItem={({ item }) => <Text style={styles.word}>{item}</Text>}
-        keyExtractor={(item, index) => index.toString()}  
-      />
-
+          numColumns={2}
+          data={Array.from({ length: currentWordData.words.length })}
+          renderItem={({ item, index }) => (
+            <View style={styles.guessedWordItem}>
+              <Text style={styles.word}>
+                {guessedWords[index] || ''}
+              </Text>
         </View>
+    )}
+    keyExtractor={(item, index) => index.toString()}
+    contentContainerStyle={{
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 10,
+      gap: 10,
+    }}
+  />
+{/* </View> */}
+
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  bgContainer: {
     flex: 1,
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    paddingHorizontal: 20, 
-    paddingVertical: 10,  
+    resizeMode: 'cover',
   },
   contentContainer: {
     width: '100%',
-    maxWidth: 350, 
     alignItems: 'center',
+    paddingVertical: 10,
+    gap: 40,
   },
-  coins: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20, 
+  buttonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  iconButton: {
+    marginHorizontal: 10,
+  },
+  iconImage: {
+    resizeMode: 'contain',
   },
   lettersContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap', 
-    justifyContent: 'center', 
-    marginVertical: 20, 
-    width: '100%', 
+    justifyContent: 'center',
+    marginVertical: 20,
+    width: '100%',
   },
   letter: {
     fontSize: 24,
@@ -232,38 +240,38 @@ const styles = StyleSheet.create({
     height: 48,
     lineHeight: 24,
   },
-  letter: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    margin: 6,
-    backgroundColor: '#ececec',
-    padding: 12,
-    borderRadius: 8,
-    textAlign: 'center',
-  
-  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     marginVertical: 20,
     padding: 15,
-    borderColor: '#ddd',
+    borderRadius: 12,
+    borderColor: '#00000026',
     borderWidth: 1,
-    borderRadius: 8,
-    minHeight: 50,
     backgroundColor: '#f9f9f9',
-    width: '80%', 
+    width: '80%',
   },
   inputText: {
     fontSize: 26,
     fontWeight: 'bold',
     color: '#333',
+    flex: 1,
+  },
+  cleanButton: {
+    marginLeft: 10,
+  },
+  cleanIcon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
   },
   guessedWordsContainer: {
-    width: '100%',
+    width: '80%',
     alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 10,
+    padding: 10,
   },
   word: {
     fontSize: 18,
@@ -271,12 +279,18 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     textAlign: 'center',
   },
-  hintButton: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'blue',
-    marginTop: 10,
+  guessedWordItem: {
+    width: 150,
+    height: 50,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    borderColor: '#FF00BB',
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
   },
+  
 });
 
 export default GameScreen;

@@ -1,14 +1,23 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 const Header = ({ coins, timer, onPause }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity onPress={onPause} style={styles.pauseButton}>
-        <Text style={styles.buttonText}>Pause</Text>
+        <Image source={require('../../assets/images/header/pause.png')} style={styles.iconImage} />
       </TouchableOpacity>
-      <Text style={styles.coins}>{coins} 🪙</Text>
-      <Text style={styles.timer}>{timer}s</Text>
+
+      <View style={styles.coinContainer}>
+        <Image source={require('../../assets/images/header/bgCoin.png')} style={styles.bgCoin} />
+        <Image source={require('../../assets/images/header/coin.png')} style={styles.coinImage} />
+        <Text style={styles.coins}>{coins}</Text>
+      </View>
+      
+      <View style={styles.timerContainer}>
+        <Image source={require('../../assets/images/header/time.png')} style={styles.timeImage} />
+        <Text style={styles.timer}>00:{timer}</Text>
+      </View>
     </View>
   );
 };
@@ -16,24 +25,56 @@ const Header = ({ coins, timer, onPause }) => {
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#f8f8f8',
+    justifyContent: 'space-between',
+    backgroundColor: '#AC4DC9CC',
+    width: '100%',
+    height: 70,
+    paddingTop: 10,
+    paddingHorizontal: 20,
+    marginTop: 60,
   },
   pauseButton: {
     padding: 10,
   },
-  buttonText: {
-    fontSize: 16,
+  iconImage: {
+    resizeMode: 'contain',
+  },
+  coinContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  bgCoin: {
+    resizeMode: 'contain',
+  },
+  coinImage: {
+    position: 'absolute',
+    left: 0,
+    resizeMode: 'contain',
   },
   coins: {
+    position: 'absolute',
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#fff',
+    left: 40,
+  },
+  timerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  timeImage: {
+    resizeMode: 'contain',
   },
   timer: {
+    position: 'absolute',
     fontSize: 16,
-    color: 'red',
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 
