@@ -7,6 +7,7 @@ import GameScreen from '../screens/GameScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import RulesScreen from '../screens/RulesScreen';
 import LevelScreen from '../screens/LevelScreen';
+import AboutScreen from '../screens/AboutScreen';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,7 @@ const AppNavigator = () => {
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="Game" component={GameScreen} />
       <Stack.Screen name="Level" component={LevelScreen} />
+      <Stack.Screen name="About" component={AboutScreen} />
     </Stack.Navigator>
   );
 };
