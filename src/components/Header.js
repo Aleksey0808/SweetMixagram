@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', 
   },
   title: {
+    position: 'absolute',
     // textAlign: 'center',
     color: '#FFFFFF',
     fontSize: 30,

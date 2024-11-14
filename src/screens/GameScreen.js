@@ -26,7 +26,6 @@ const GameScreen = ({ route }) => {
 
   const currentWordData = wordsData[level][currentWordIndex];
 
- 
   useFocusEffect(
     useCallback(() => {
       resetTimer(60);
@@ -57,8 +56,8 @@ const GameScreen = ({ route }) => {
   }, [paused, modalVisible]);
 
   useEffect(() => {
-    if (currentWordData.words.length === guessedWords.length) {
-      setWin(true);
+    if (currentWordIndex === 2 && currentWordData.words.length === guessedWords.length) {
+      return setWin(true);
     }
     setShuffledLetters(shuffleWord(currentWordData.word));
     if (currentWordData.words.length === guessedWords.length) {
@@ -99,10 +98,10 @@ const GameScreen = ({ route }) => {
       addCoins(10);
       setSelectedLetters('');
     } else if (guessedWords.includes(newSelectedLetters)) {
-      Alert.alert('Такое слово уже есть.');
+      Alert.alert('Such a word already exists.');
       setSelectedLetters('');
     } else {
-      Alert.alert('Неверное слово', 'Попробуйте еще раз.');
+      Alert.alert('Wrong word', 'Please try again.');
       setSelectedLetters('');
     }
   };
@@ -137,6 +136,7 @@ const GameScreen = ({ route }) => {
     setWin(false);
     setPaused(false);
     clean();
+    setCurrentWordIndex(0)
   };
 
   const handleModalAction = () => {
