@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useFonts } from '../utils/FontContext';
+import React from 'react';
+import { View, Modal, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native';
+
 import { useSound } from '../utils/SoundProvider';
 
 const PopupModal = ({ visible, onPlay, modalType }) => {
   const { isSoundOn, playClickSound } = useSound();
-  const { fontsLoaded } = useFonts();
-  const navigation = useNavigation();
 
   let textImage, onPressAction;
 

@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, StyleSheet, FlatList, ImageBackground, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ImageBackground, Image, TouchableOpacity } from 'react-native';
 import wordsData from '../helpers/wordsData';
 import PopupModal from '../components/PopupModal';
+import HelpModal from '../components/HelpModal';
 import { useCoins } from '../utils/CoinsProvider';
 import { useTimer } from '../utils/TimerContext';
 import Header from '../components/Header';
 import { useSound } from '../utils/SoundProvider';
 import { useFonts } from '../utils/FontContext';
 
-const GameScreen = ({ route }) => {
+const GameScreen = ({ route, navigation }) => {
   const { fontsLoaded } = useFonts();
   const { isSoundOn, playClickSound } = useSound();
   const { level } = route.params;
@@ -17,6 +18,8 @@ const GameScreen = ({ route }) => {
   const { coins, addCoins, removeCoins, hints, addHint, useHint } = useCoins();
   const { timer, setTimer, resetTimer, pauseTimer, resumeTimer } = useTimer();
   const [modalVisible, setModalVisible] = useState(false);
+  const [helpVisible, setHelpVisible] = useState(false);
+  const [helpTitle, setHelpTitle] = useState('');
   const [guessedWords, setGuessedWords] = useState([]);
   const [selectedLetters, setSelectedLetters] = useState('');
   const [shuffledLetters, setShuffledLetters] = useState([]);
@@ -28,7 +31,7 @@ const GameScreen = ({ route }) => {
 
   useFocusEffect(
     useCallback(() => {
-      resetTimer(60);
+      setModalVisible(false);
       return () => {
         setModalVisible(false);
       };
@@ -98,10 +101,12 @@ const GameScreen = ({ route }) => {
       addCoins(10);
       setSelectedLetters('');
     } else if (guessedWords.includes(newSelectedLetters)) {
-      Alert.alert('Such a word already exists.');
+      setHelpVisible(true)
+      setHelpTitle('Such a word already exists.')
       setSelectedLetters('');
     } else {
-      Alert.alert('Wrong word', 'Please try again.');
+      setHelpVisible(true)
+      setHelpTitle('Wrong word', 'Please try again.')
       setSelectedLetters('');
     }
   };
@@ -125,7 +130,8 @@ const GameScreen = ({ route }) => {
       useHint(1);
       setGuessedWords([...guessedWords, hintWord]);
     } else {
-      Alert.alert("Все слова угаданы!");
+      setHelpVisible(true)
+      setHelpTitle("All words are guessed!")
     }
   };
 
@@ -144,13 +150,20 @@ const GameScreen = ({ route }) => {
       resumeTimer();
       setPaused(false);
       setModalVisible(false);
+      setHelpVisible(false)
     } else if (win) {
       restart();
       setModalVisible(false);
     } else if (timer === 0) {
-      restart();
+      navigation.navigate("Bonus")
       setModalVisible(false);
     }
+  };
+
+  const handleModalHelp = () => {
+      resumeTimer();
+      setPaused(false);
+      setHelpVisible(false)
   };
 
   const getModalType = () => {
@@ -188,14 +201,26 @@ const GameScreen = ({ route }) => {
         onClose={() => setModalVisible(false)}
       />
 
+      <HelpModal
+        visible={helpVisible}
+        onPlay={handleModalHelp}
+        title={helpTitle}
+      />
+
       <View style={styles.contentContainer}>
         <Header coins={coins} timer={formatTime(timer)} onPause={selectPaused} />
         <View style={styles.buttonsRow}>
-          <TouchableOpacity onPress={handleHint} style={styles.iconButton}>
+          <TouchableOpacity 
+          disabled={hints === 0 ? true : false}
+          onPress={handleHint} 
+          style={styles.iconButton}>
             <Image source={require('../../assets/images/elements/helpButton.png')} style={styles.iconImage} />
             <Text style={[styles.hint, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>HINT({hints})</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleSkip} style={styles.iconButton}>
+          <TouchableOpacity 
+          disabled={timer === 0 ? true : false}
+          onPress={handleSkip} 
+          style={styles.iconButton}>
             <Image source={require('../../assets/images/elements/helpButton.png')} style={styles.iconImage} />
             <Text style={[styles.hint, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>SKIP</Text>
           </TouchableOpacity>
@@ -210,7 +235,9 @@ const GameScreen = ({ route }) => {
         <FlatList
           data={shuffledLetters}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => {
+            <TouchableOpacity 
+            disabled={timer === 0 ? true : false}
+            onPress={() => {
               handleLetterPress(item);
               isSoundOn && playClickSound();
             }}
@@ -283,7 +310,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   letter: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     margin: 6,
     backgroundColor: '#ececec',
@@ -307,7 +334,7 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   inputText: {
-    fontSize: 26,
+    fontSize: 35,
     fontWeight: 'bold',
     color: '#333',
     flex: 1,
@@ -321,7 +348,8 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   word: {
-    fontSize: 18,
+    fontSize: 25,
+    fontWeight: 'bold',
     color: '#555',
     marginVertical: 4,
     textAlign: 'center',
