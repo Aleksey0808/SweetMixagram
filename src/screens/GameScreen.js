@@ -4,17 +4,18 @@ import { View, Text, StyleSheet, FlatList, ImageBackground, Image, TouchableOpac
 import wordsData from '../helpers/wordsData';
 import PopupModal from '../components/PopupModal';
 import { useCoins } from '../utils/CoinsProvider';
+import { useTimer } from '../utils/TimerContext';
 import Header from '../components/Header';
 import { useSound } from '../utils/SoundProvider';
 import { useFonts } from '../utils/FontContext';
 
-const GameScreen = ({route}) => {
+const GameScreen = ({ route }) => {
   const { fontsLoaded } = useFonts();
   const { isSoundOn, playClickSound } = useSound();
   const { level } = route.params;
 
   const { coins, addCoins, removeCoins, hints, addHint, useHint } = useCoins();
-  const [timer, setTimer] = useState(60);
+  const { timer, setTimer, resetTimer, pauseTimer, resumeTimer } = useTimer();
   const [modalVisible, setModalVisible] = useState(false);
   const [guessedWords, setGuessedWords] = useState([]);
   const [selectedLetters, setSelectedLetters] = useState('');
@@ -22,53 +23,64 @@ const GameScreen = ({route}) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [win, setWin] = useState(false);
- 
+
   const currentWordData = wordsData[level][currentWordIndex];
 
+ 
   useFocusEffect(
     useCallback(() => {
+      resetTimer(60);
       return () => {
-        setModalVisible(false); 
+        setModalVisible(false);
       };
     }, [])
   );
 
   useEffect(() => {
-    if ((paused || timer === 0 || win) && !modalVisible) { 
+    if ((paused || timer === 0 || win) && !modalVisible) {
       setModalVisible(true);
     }
   }, [paused, timer, win, modalVisible]);
 
   useEffect(() => {
     let interval;
-    if (!paused && timer > 0 && !modalVisible) { 
-      interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
-    } else {
+  
+    if (!paused && !modalVisible) {
+      interval = setInterval(() => {
+        setTimer((prev) => Math.max(prev - 1, 0));
+      }, 1000);
+    } else if (paused || modalVisible) {
       clearInterval(interval);
     }
-    return () => clearInterval(interval);
-  }, [paused, timer, modalVisible]); 
   
+    return () => clearInterval(interval);
+  }, [paused, modalVisible]);
 
   useEffect(() => {
     if (currentWordData.words.length === guessedWords.length) {
-      setWin(true)
+      setWin(true);
     }
     setShuffledLetters(shuffleWord(currentWordData.word));
     if (currentWordData.words.length === guessedWords.length) {
-      setCurrentWordIndex(currentWordIndex + 1)
-      setGuessedWords([])
+      setCurrentWordIndex(currentWordIndex + 1);
+      setGuessedWords([]);
     }
   }, [guessedWords]);
+
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
 
   const shuffleWord = (word) => {
     return word.split('').sort(() => Math.random() - 0.5);
   };
 
   const clean = () => {
-    isSoundOn && playClickSound()
-    setSelectedLetters('')
-  }
+    isSoundOn && playClickSound();
+    setSelectedLetters('');
+  };
 
   const handleLetterPress = (letter) => {
     const newSelectedLetters = selectedLetters + letter;
@@ -88,30 +100,30 @@ const GameScreen = ({route}) => {
       setSelectedLetters('');
     } else if (guessedWords.includes(newSelectedLetters)) {
       Alert.alert('Такое слово уже есть.');
-      setSelectedLetters(''); 
+      setSelectedLetters('');
     } else {
       Alert.alert('Неверное слово', 'Попробуйте еще раз.');
-      setSelectedLetters(''); 
+      setSelectedLetters('');
     }
   };
 
   const handleSkip = () => {
-    isSoundOn && playClickSound()
+    isSoundOn && playClickSound();
     const wordToSkip = currentWordData.words.find((word) => !guessedWords.includes(word));
     if (wordToSkip) {
-      removeCoins(10)
-      setGuessedWords([...guessedWords, "skip"]);  
+      removeCoins(10);
+      setGuessedWords([...guessedWords, "skip"]);
     }
   };
-  
+
   const handleHint = () => {
-    isSoundOn && playClickSound()
+    isSoundOn && playClickSound();
     const remainingWords = currentWordData.words.filter(word => !guessedWords.includes(word));
 
     if (remainingWords.length > 0) {
       const hintWord = remainingWords[0];
-      removeCoins(10)
-      useHint(1)
+      removeCoins(10);
+      useHint(1);
       setGuessedWords([...guessedWords, hintWord]);
     } else {
       Alert.alert("Все слова угаданы!");
@@ -119,25 +131,25 @@ const GameScreen = ({route}) => {
   };
 
   const restart = () => {
-    isSoundOn && playClickSound()
-    setTimer(60);
+    isSoundOn && playClickSound();
+    resetTimer();
     setGuessedWords([]);
-    setWin(false); 
+    setWin(false);
     setPaused(false);
     clean();
   };
-  
 
   const handleModalAction = () => {
     if (paused) {
+      resumeTimer();
       setPaused(false);
-      setModalVisible(false); 
+      setModalVisible(false);
     } else if (win) {
-      restart(); 
-      setModalVisible(false); 
+      restart();
+      setModalVisible(false);
     } else if (timer === 0) {
-      restart(); 
-      setModalVisible(false); 
+      restart();
+      setModalVisible(false);
     }
   };
 
@@ -149,17 +161,22 @@ const GameScreen = ({route}) => {
   };
 
   const selectPaused = () => {
-    isSoundOn && playClickSound()
+    isSoundOn && playClickSound();
     setPaused(!paused);
+    if (!paused) {
+      pauseTimer();
+    } else {
+      resumeTimer();
+    }
   };
 
   return (
     <ImageBackground
       source={
         level === 'easy'
-          ? require('../../assets/images/game/easyBg.png') 
-          : level === 'normal' 
-            ? require('../../assets/images/game/normalBg.jpg') 
+          ? require('../../assets/images/game/easyBg.png')
+          : level === 'normal'
+            ? require('../../assets/images/game/normalBg.jpg')
             : require('../../assets/images/game/hardBg.jpg')
       }
       style={styles.bgContainer}
@@ -172,7 +189,7 @@ const GameScreen = ({route}) => {
       />
 
       <View style={styles.contentContainer}>
-        <Header coins={coins} timer={timer} onPause={selectPaused} />
+        <Header coins={coins} timer={formatTime(timer)} onPause={selectPaused} />
         <View style={styles.buttonsRow}>
           <TouchableOpacity onPress={handleHint} style={styles.iconButton}>
             <Image source={require('../../assets/images/elements/helpButton.png')} style={styles.iconImage} />
@@ -183,10 +200,9 @@ const GameScreen = ({route}) => {
             <Text style={[styles.hint, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>SKIP</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {
-            isSoundOn && playClickSound()
-            setShuffledLetters(shuffleWord(currentWordData.word))
-          }
-            } 
+            isSoundOn && playClickSound();
+            setShuffledLetters(shuffleWord(currentWordData.word));
+          }}
             style={styles.iconButton}>
             <Image source={require('../../assets/images/game/mix.png')} style={styles.iconImage} />
           </TouchableOpacity>
@@ -195,10 +211,10 @@ const GameScreen = ({route}) => {
           data={shuffledLetters}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => {
-              handleLetterPress(item)
-              isSoundOn && playClickSound()
-            }
-            }>
+              handleLetterPress(item);
+              isSoundOn && playClickSound();
+            }}
+            >
               <Text style={styles.letter}>{item}</Text>
             </TouchableOpacity>
           )}
@@ -220,16 +236,16 @@ const GameScreen = ({route}) => {
               <Text style={styles.word}>
                 {guessedWords[index] || ''}
               </Text>
-        </View>
-       )}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingHorizontal: 10,
-          gap: 10,
-        }}
-      />
+            </View>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingHorizontal: 10,
+            gap: 10,
+          }}
+        />
       </View>
     </ImageBackground>
   );

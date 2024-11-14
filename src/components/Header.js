@@ -35,7 +35,7 @@ const Header = ({ coins, timer, onPause, title, icon }) => {
       
       <View style={styles.timerContainer}>
         <Image source={require('../../assets/images/header/time.png')} style={styles.timeImage} />
-        <Text style={[styles.timer, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>00:{timer}</Text>
+        <Text style={[styles.timer, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>{timer}</Text>
       </View>
     </>
       }
