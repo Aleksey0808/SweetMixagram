@@ -1,9 +1,16 @@
 import React from 'react';
 import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { useSound } from '../utils/SoundProvider';
 
 const Card = ({ isFlipped, fruitImage, onPress }) => {
+  const { isSoundOn, playClickSound } = useSound();
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
+    <TouchableOpacity style={styles.card} onPress={() => {
+      isSoundOn && playClickSound()
+      onPress()
+    }
+      
+      }>
       <Image
         source={isFlipped ? fruitImage : require('../../assets/images/bonus/non.png')}
         style={styles.image}

@@ -130,7 +130,7 @@ const BonusScreen = ({ navigation }) => {
         modalType={modalType}
       />
 
-      <Header title={`${attempts}/5`} icon={true} onPause={() => navigation.goBack()} />
+      <Header title={`${attempts}/5`} icon={false} showBackButton={true} onPause={() => navigation.goBack()} />
       <View style={styles.container}>
         <View style={styles.boardContainer}>
           <Image
