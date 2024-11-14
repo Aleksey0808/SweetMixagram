@@ -47,7 +47,7 @@ const HomeScreen = ({ navigation }) => {
           <TouchableOpacity 
           style={styles.wrapperButton} 
           onPress={() => {
-            navigation.navigate("Game")
+            navigation.navigate("Bonus")
             isSoundOn && playClickSound()
           }
           }>
