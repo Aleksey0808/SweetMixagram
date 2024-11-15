@@ -1,6 +1,7 @@
 {
   "expo": {
-    "name": "SweetMixagram",
+    "name": "Candy Maker Word",
+    "displayName": "Candy Maker Word",
     "slug": "SweetMixagram",
     "version": "1.0.0",
     "orientation": "portrait",

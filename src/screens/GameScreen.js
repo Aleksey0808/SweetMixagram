@@ -9,6 +9,7 @@ import { useTimer } from '../utils/TimerContext';
 import Header from '../components/Header';
 import { useSound } from '../utils/SoundProvider';
 import { useFonts } from '../utils/FontContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -53,6 +54,28 @@ const GameScreen = ({ route, navigation }) => {
 
   const currentWordData = wordsData[level][currentWordIndex];
 
+  const storageKey = `guessedWords-level-${level}`;
+
+const loadGuessedWords = async () => {
+  try {
+    const storedWords = await AsyncStorage.getItem(storageKey);
+    if (storedWords) {
+      setGuessedWords(JSON.parse(storedWords));
+    }
+  } catch (error) {
+    console.error('Error loading guessed words:', error);
+  }
+};
+
+const saveGuessedWords = async (words) => {
+  try {
+    await AsyncStorage.setItem(storageKey, JSON.stringify(words));
+  } catch (error) {
+    console.error('Error saving guessed words:', error);
+  }
+};
+
+
   useFocusEffect(
     useCallback(() => {
       setModalVisible(false);
@@ -61,6 +84,11 @@ const GameScreen = ({ route, navigation }) => {
       };
     }, [])
   );
+
+  useEffect(() => {
+    loadGuessedWords();
+  }, []);
+  
 
   useEffect(() => {
     if ((paused || timer === 0 || win) && !modalVisible) {
@@ -91,6 +119,7 @@ const GameScreen = ({ route, navigation }) => {
       setCurrentWordIndex(currentWordIndex + 1);
       setGuessedWords([]);
     }
+    saveGuessedWords(guessedWords);
   }, [guessedWords]);
 
   const formatTime = (time) => {
