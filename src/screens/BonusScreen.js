@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ImageBackground, Image, StyleSheet, FlatList } from 'react-native';
+import { View, Text, ImageBackground, Image, StyleSheet, FlatList, Dimensions } from 'react-native';
 import Header from '../components/Header';
 import { useFonts } from '../utils/FontContext';
 import { fruitImages } from '../helpers/fruitImages'; 
@@ -7,6 +7,51 @@ import Card from '../components/Card';
 import BonusModal from '../components/BonusModal';
 import { useCoins } from '../utils/CoinsProvider';
 import { useTimer } from '../utils/TimerContext';
+
+const { width, height } = Dimensions.get('window');
+
+const getDynamicStyles = () => {
+  return height > 749
+    ? {
+      container: { 
+        flex: 1, 
+        marginTop: 60, 
+        alignItems: 'center' 
+    },
+    bgText: {
+      position: 'absolute',
+      bottom: 100,
+      width: '100%',
+      backgroundColor: '#E81196B2',
+    },
+    text: {
+      textAlign: 'center',
+      fontSize: 20,
+      color: '#FFFFFF',
+      padding: 30,
+    },
+      }
+    : {
+      container: { 
+        flex: 1, 
+        marginTop: height * 0.01, 
+        alignItems: 'center' 
+    },
+    bgText: {
+      position: 'absolute',
+      bottom: height * 0.01,
+      width: '100%',
+      backgroundColor: '#E81196B2',
+    },
+    text: {
+      textAlign: 'center',
+      fontSize: 20,
+      color: '#FFFFFF',
+      padding: 5,
+      padding: height * 0.01,
+    },
+      };
+};
 
 const BonusScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -19,7 +64,8 @@ const BonusScreen = ({ navigation }) => {
   const [attempts, setAttempts] = useState(5); 
   const { addHint } = useCoins();
   const { setTimer } = useTimer();
-  console.log(modalType)
+
+  const dynamicStyles = getDynamicStyles();
 
   useEffect(() => {
     initializeGame();
@@ -131,7 +177,7 @@ const BonusScreen = ({ navigation }) => {
       />
 
       <Header title={`${attempts}/5`} icon={false} showBackButton={true} onPause={() => navigation.goBack()} />
-      <View style={styles.container}>
+      <View style={dynamicStyles.container}>
         <View style={styles.boardContainer}>
           <Image
             source={require('../../assets/images/bonus/board.png')}
@@ -159,8 +205,8 @@ const BonusScreen = ({ navigation }) => {
             />
           </View>
         </View>
-        <View style={styles.bgText}>
-          <Text style={[styles.text, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>
+        <View style={dynamicStyles.bgText}>
+          <Text style={[dynamicStyles.text, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>
             Turn the cards over in pairs and you can get extra time for playing or an extra hint.
           </Text>
         </View>
@@ -174,11 +220,6 @@ const styles = StyleSheet.create({
     flex: 1, 
     resizeMode: 'cover' 
 },
-  container: { 
-    flex: 1, 
-    marginTop: 60, 
-    alignItems: 'center' 
-},
   boardContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -190,26 +231,9 @@ const styles = StyleSheet.create({
   },
   cardsContainer: {
     position: 'absolute',
-    // top: '15%',
-    // width: '80%',
-    // height: '80%',
-    // flexDirection: 'row',
-    // flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1000,
-  },
-  bgText: {
-    position: 'absolute',
-    bottom: 100,
-    width: '100%',
-    backgroundColor: '#E81196B2',
-  },
-  text: {
-    textAlign: 'center',
-    fontSize: 20,
-    color: '#FFFFFF',
-    padding: 30,
   },
 });
 

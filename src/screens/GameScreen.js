@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, StyleSheet, FlatList, ImageBackground, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ImageBackground, Image, TouchableOpacity, Dimensions } from 'react-native';
 import wordsData from '../helpers/wordsData';
 import PopupModal from '../components/PopupModal';
 import HelpModal from '../components/HelpModal';
@@ -10,10 +10,34 @@ import Header from '../components/Header';
 import { useSound } from '../utils/SoundProvider';
 import { useFonts } from '../utils/FontContext';
 
+const { width, height } = Dimensions.get('window');
+
+const getDynamicStyles = () => {
+  return height > 749
+    ? {
+      contentContainer: {
+        width: '100%',
+        alignItems: 'center',
+        paddingVertical: 10,
+        gap: 40,
+      },
+      }
+    : {
+      contentContainer: {
+        width: '100%',
+        alignItems: 'center',
+        paddingVertical: 10,
+        gap: height * 0.01,
+      },
+      };
+};
+
 const GameScreen = ({ route, navigation }) => {
   const { fontsLoaded } = useFonts();
   const { isSoundOn, playClickSound } = useSound();
   const { level } = route.params;
+
+  const dynamicStyles = getDynamicStyles();
 
   const { coins, addCoins, removeCoins, hints, addHint, useHint } = useCoins();
   const { timer, setTimer, resetTimer, pauseTimer, resumeTimer } = useTimer();
@@ -207,7 +231,7 @@ const GameScreen = ({ route, navigation }) => {
         title={helpTitle}
       />
 
-      <View style={styles.contentContainer}>
+      <View style={dynamicStyles.contentContainer}>
         <Header coins={coins} timer={formatTime(timer)} onPause={selectPaused} />
         <View style={styles.buttonsRow}>
           <TouchableOpacity 
@@ -282,12 +306,6 @@ const styles = StyleSheet.create({
   bgContainer: {
     flex: 1,
     resizeMode: 'cover',
-  },
-  contentContainer: {
-    width: '100%',
-    alignItems: 'center',
-    paddingVertical: 10,
-    gap: 40,
   },
   buttonsRow: {
     flexDirection: 'row',

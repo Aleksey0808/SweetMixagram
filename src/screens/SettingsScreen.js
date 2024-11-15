@@ -9,12 +9,12 @@ const SettingsScreen = ({ navigation }) => {
   const { isMusicOn, setIsMusicOn, isSoundOn, setIsSoundOn, playClickSound } = useSound(); 
 
   const handleTermsPress = () => {
-    Linking.openURL('https://racketstep.click/aviacloud-terms');
+    Linking.openURL('https://skateboardstep.xyz/makerword-terms');
     isSoundOn && playClickSound()
   };
 
   const handlePrivacyPress = () => {
-    Linking.openURL('https://racketstep.click/alviacloud-policy');
+    Linking.openURL('https://skateboardstep.xyz/makerword-policy');
     isSoundOn && playClickSound()
   };
 
