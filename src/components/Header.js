@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 10,
     padding: 10,
+    zIndex: 2000,
   },
   iconImage: {
     resizeMode: 'contain',

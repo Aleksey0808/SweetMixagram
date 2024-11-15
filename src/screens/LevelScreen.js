@@ -54,14 +54,14 @@ const LevelScreen = ({ navigation }) => {
             navigation.navigate("Game", { level: 'hard' })
           }
           }
-          disabled={coins <= 100}
+          disabled={coins <= 200}
           >
           {coins >= 100 ? 
               <Image source={require('../../assets/images/elements/hard.png')} style={styles.imgButton} />
               :
               <>
               <Image source={require('../../assets/images/elements/disable.png')} style={styles.imgButton} />
-              <Image source={require('../../assets/images/elements/coin.png')} style={styles.levelCoin} />
+              <Image source={require('../../assets/images/elements/coin200.png')} style={styles.levelCoin} />
               </>
             }
               <Text style={[styles.textButton, { fontFamily: fontsLoaded ? 'baloo-cyrillic' : 'System' }]}>Hard</Text>
