@@ -6,8 +6,20 @@ import { CoinsProvider } from './src/utils/CoinsProvider';
 import { TimerProvider } from './src/utils/TimerContext';
 import { FontProvider } from './src/utils/FontContext';
 import { SoundProvider } from './src/utils/SoundProvider';
+import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
 
 export default function App() {
+  const getPermission = async () => {
+    if (AppState.currentState === "active") {
+      await requestTrackingPermissionsAsync();
+    } else {
+      setTimeout(() => getPermission(), 100);
+    }
+  };
+
+  useEffect(() => {
+    getPermission();
+  }, [])
     return (
       <TimerProvider>
       <CoinsProvider>

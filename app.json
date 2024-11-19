@@ -2,11 +2,11 @@
   "expo": {
     "name": "Candy Maker Word",
     "displayName": "Candy Maker Word",
-    "slug": "SweetMixagram",
+    "slug": "candymakermord",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "candymakermord",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -14,14 +14,37 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSAdvertisingAttributionReportEndpoint": "https://appsflyer-skadnetwork.com/",
+        "SKAdNetworkItems": [
+          {
+            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "cstr6suwn9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "eqhxz8m8av.skadnetwork"
+          }
+        ]
+      },
+      "bundleIdentifier": "com.candymakermord",
+      "associatedDomains": [
+        "applinks:candymakermord.onelink.me"
+      ]
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.aleksey0808.SweetMixagram"
+      "permissions": [
+        "com.google.android.gms.permission.AD_ID"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -30,14 +53,54 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "react-native-appsflyer",
+        {
+          "shouldUseStrictMode": false
+        }
+      ],
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "production"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static",
+            "deploymentTarget": "15.1"
+          }
+        }
+      ],
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
+        }
+      ],
+      [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+        }
+      ]
     ],
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "requestHeaders": {
+        "expo-channel-name": "candymakermord"
+      },
+      "url": "https://u.expo.dev/b17aea79-f10a-4cfa-82ec-2478aba72154"
+    },
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
       "eas": {
-        "projectId": "31fc9480-c487-49bd-8be6-f584c08b894f"
+        "projectId": "b17aea79-f10a-4cfa-82ec-2478aba72154"
       }
     }
   }
