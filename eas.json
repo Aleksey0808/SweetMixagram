@@ -7,20 +7,22 @@
     "production": {
       "android": {
         "distribution": "store",
-        "autoIncrement": true,
-        "buildType": "apk"
+        "autoIncrement": true
       },
       "ios": {
         "distribution": "store",
         "autoIncrement": true
-      }
+      },
+      "channel": "production"
     },
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "development"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "preview"
     }
   },
   "submit": {

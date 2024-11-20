@@ -1,11 +1,26 @@
 import React, { useEffect } from 'react';
-import { View, Text, ImageBackground, Image, StyleSheet, Animated } from 'react-native';
+import { View, Text, ImageBackground, Image, StyleSheet, Animated, useWindowDimensions } from 'react-native';
 import { useFonts } from '../utils/FontContext';
+import * as Updates from "expo-updates";
 
 
 const PreviewScreen = ({ navigation }) => {
+  const { width, height } = useWindowDimensions();
+  const isPortrait = height >= width;
   const { fontsLoaded } = useFonts();
   const dotsOpacity = new Animated.Value(0);
+
+  async function updatetext() {
+    const res = await Updates.checkForUpdateAsync();
+    if (res.isAvailable) {
+      await Updates.fetchUpdateAsync();
+      await Updates.reloadAsync();
+    }
+  }
+
+  useEffect(() => {
+    updatetext();
+  }, [])
 
   const startDotsAnimation = () => {
     Animated.loop(
