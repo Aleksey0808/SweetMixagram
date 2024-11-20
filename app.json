@@ -5,6 +5,7 @@
     "slug": "candymakermord",
     "version": "1.0.0",
     "orientation": "default",
+    "assetBundlePatterns": ["assets/fonts/*"],
     "icon": "./assets/images/icon.png",
     "scheme": "candymakermord",
     "userInterfaceStyle": "automatic",
@@ -44,7 +45,8 @@
       },
       "permissions": [
         "com.google.android.gms.permission.AD_ID"
-      ]
+      ],
+      "package": "com.candymakermord"
     },
     "web": {
       "bundler": "metro",

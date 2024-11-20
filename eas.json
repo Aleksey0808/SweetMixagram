@@ -7,8 +7,7 @@
     "production": {
       "android": {
         "distribution": "store",
-        "autoIncrement": true,
-        "buildType": "apk"
+        "autoIncrement": true
       },
       "ios": {
         "distribution": "store",

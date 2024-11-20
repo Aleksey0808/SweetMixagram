@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { Asset } from 'expo-asset';
 
 const FontContext = createContext();
 
@@ -11,8 +12,8 @@ export const FontProvider = ({ children }) => {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'baloo-cyrillic': require('../../assets/fonts/baloo-cyrillic.ttf'), 
-      });
+        'baloo-cyrillic': { uri: 'https://example.com/fonts/baloo-cyrillic.ttf' },
+      });      
       setFontsLoaded(true);
       await SplashScreen.hideAsync(); 
     };
