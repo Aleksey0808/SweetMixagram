@@ -2,12 +2,12 @@
   "expo": {
     "name": "Candy Maker Word",
     "displayName": "Candy Maker Word",
-    "slug": "candymakermord",
+    "slug": "candymakerword",
     "version": "1.0.0",
     "orientation": "default",
     "assetBundlePatterns": ["assets/fonts/*"],
     "icon": "./assets/images/icon.png",
-    "scheme": "candymakermord",
+    "scheme": "candymakerword",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -33,9 +33,9 @@
           }
         ]
       },
-      "bundleIdentifier": "com.candymakermord",
+      "bundleIdentifier": "com.ttnnrj.woi",
       "associatedDomains": [
-        "applinks:candymakermord.onelink.me"
+        "applinks:candymakerword.onelink.me"
       ]
     },
     "android": {
@@ -46,7 +46,7 @@
       "permissions": [
         "com.google.android.gms.permission.AD_ID"
       ],
-      "package": "com.candymakermord"
+      "package": "com.ttnnrj.woi"
     },
     "web": {
       "bundler": "metro",
@@ -93,7 +93,7 @@
     "runtimeVersion": "1.0.0",
     "updates": {
       "requestHeaders": {
-        "expo-channel-name": "candymakermord"
+        "expo-channel-name": "candymakerword"
       },
       "url": "https://u.expo.dev/b17aea79-f10a-4cfa-82ec-2478aba72154"
     },
